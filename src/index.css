@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * MarketHub Design System
+ *
+ * Theme: Warm, trustworthy, commerce-focused
+ * Primary: Orange (#E85D04) — energy, commerce, Tanzania warmth
+ * Secondary: Deep green (#1B4332) — trust, growth, Tanzania flag
+ * Background: Warm off-white (#FAFAF5) — clean, inviting
+ */
+
+@layer base {
+  :root {
+    /* MarketHub palette */
+    --background: 40 30% 97%;         /* #FAFAF5 warm off-white */
+    --foreground: 230 30% 14%;        /* #1A1A2E near-black blue */
+
+    --card: 0 0% 100%;
+    --card-foreground: 230 30% 14%;
+
+    --primary: 24 92% 47%;           /* #E85D04 warm orange */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 152 55% 18%;        /* #1B4332 deep green */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 40 20% 95%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 32 75% 67%;            /* #F4A261 light amber */
+    --accent-foreground: 230 30% 14%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 24 92% 47%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 230 20% 8%;
+    --foreground: 40 20% 95%;
+
+    --card: 230 20% 12%;
+    --card-foreground: 40 20% 95%;
+
+    --primary: 24 92% 52%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 152 55% 25%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 230 15% 16%;
+    --muted-foreground: 220 10% 60%;
+
+    --accent: 32 75% 55%;
+    --accent-foreground: 230 30% 14%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 230 15% 20%;
+    --input: 230 15% 20%;
+    --ring: 24 92% 52%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Scrollbar hiding for horizontal category lists */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area for mobile bottom nav */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
