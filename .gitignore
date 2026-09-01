@@ -3,8 +3,7 @@ node_modules/
 .pnp
 .pnp.js
 
-# Legacy (old Django backend - not used)
-markethub-backend/
+
 
 # Build
 dist/
@@ -41,3 +40,8 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
+markethub-backend/db.sqlite3
+markethub-backend/__pycache__/
+markethub-backend/**/__pycache__/
+markethub-backend/media/
+markethub-backend/staticfiles/
