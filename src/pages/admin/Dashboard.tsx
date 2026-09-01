@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Users,
@@ -7,19 +8,33 @@ import {
   Megaphone,
   ArrowRight,
   DollarSign,
+  Database,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { ROUTES } from "@/lib/constants";
 import { PriceDisplay } from "@/components/ui/price-display";
 
 export default function AdminDashboard() {
+  const [seedStatus, setSeedStatus] = useState("");
+  const seedAll = useMutation(api.seed.seedAll);
+
   const users = useQuery(api.users.getAllUsers);
   const sellers = useQuery(api.users.getAllSellers);
   const allProducts = useQuery(api.products.listProducts, { limit: 100 });
   const orders = useQuery(api.orders.getAllOrders, { limit: 100 });
+
+  const handleSeed = async () => {
+    setSeedStatus("Seeding...");
+    try {
+      const result = await seedAll();
+      setSeedStatus(JSON.stringify(result, null, 2));
+    } catch (err: any) {
+      setSeedStatus(`Error: ${err.message}`);
+    }
+  };
 
   const totalRevenue =
     orders?.reduce((sum, o) => sum + (o.status === "delivered" ? o.total : 0), 0) ?? 0;
@@ -65,6 +80,30 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="border-dashed border-primary/30 bg-primary/5">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Database className="h-5 w-5 text-primary" />
+              <div>
+                <p className="text-sm font-semibold">Seed Demo Data</p>
+                <p className="text-xs text-muted-foreground">
+                  Add sample sellers, products, orders, and campaigns
+                </p>
+              </div>
+            </div>
+            <Button size="sm" onClick={handleSeed}>
+              Seed Data
+            </Button>
+          </div>
+          {seedStatus && (
+            <pre className="mt-3 text-xs bg-muted rounded p-2 overflow-auto max-h-32">
+              {seedStatus}
+            </pre>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

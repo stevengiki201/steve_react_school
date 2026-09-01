@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useConvexAuth } from "convex/react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ROUTES, MARKETHUB } from "@/lib/constants";
 
 export default function AuthPage() {
@@ -11,7 +12,12 @@ export default function AuthPage() {
   const { signIn } = useAuthActions();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const returnTo = searchParams.get("returnTo") || ROUTES.market;
+  const returnTo = searchParams.get("returnTo") || ROUTES.home;
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,6 +35,37 @@ export default function AuthPage() {
 
   if (isAuthenticated) return null;
 
+  const handleEmailSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await signIn("password", { email, password, redirectTo: returnTo });
+    } catch (err: any) {
+      setError(err.message || "Sign in failed. Check your credentials.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await signIn("password", {
+        email,
+        password,
+        redirectTo: returnTo,
+        flow: "signUp",
+      } as any);
+    } catch (err: any) {
+      setError(err.message || "Sign up failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-sm space-y-6">
@@ -44,7 +81,64 @@ export default function AuthPage() {
           </p>
         </div>
 
-        <div className="rounded-lg border bg-card p-6 shadow-sm space-y-3">
+        {/* Email + Password */}
+        <div className="rounded-lg border bg-card p-6 shadow-sm">
+          <form onSubmit={handleEmailSignIn} className="space-y-3">
+            <div>
+              <label className="text-sm font-medium text-foreground">Email</label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground">Password</label>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                minLength={6}
+                className="mt-1"
+              />
+            </div>
+
+            {error && (
+              <p className="text-xs text-destructive">{error}</p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? "Signing in..." : "Sign In"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleSignUp}
+              disabled={isSubmitting}
+            >
+              Create Account
+            </Button>
+          </form>
+        </div>
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-muted/30 px-2 text-muted-foreground">or continue with</span>
+          </div>
+        </div>
+
+        {/* OAuth */}
+        <div className="rounded-lg border bg-card p-4 shadow-sm space-y-3">
           <Button
             variant="outline"
             className="w-full"
@@ -59,6 +153,15 @@ export default function AuthPage() {
           >
             Continue with Google
           </Button>
+        </div>
+
+        {/* Quick test accounts */}
+        <div className="rounded-lg border border-dashed bg-muted/30 p-4">
+          <p className="text-xs font-medium text-foreground mb-2">🧪 Quick Test Accounts</p>
+          <p className="text-[11px] text-muted-foreground">
+            Sign up with any email above. Then use the <strong>Seed Data</strong> button on the
+            Admin Dashboard (<code>/admin</code>) to populate demo products.
+          </p>
         </div>
 
         <p className="text-center text-xs text-muted-foreground">
