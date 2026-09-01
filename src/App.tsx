@@ -18,7 +18,7 @@ import AccountPage from "./pages/customer/AccountPage";
 import ProfilePage from "./pages/ProfilePage";
 import AuthPage from "./pages/AuthPage";
 
-// Customer pages
+// Seller onboarding
 import SellOnboardingPage from "./pages/SellOnboardingPage";
 
 // Seller pages
@@ -27,7 +27,9 @@ import SellerProducts from "./pages/seller/Products";
 import SellerProductNew from "./pages/seller/ProductNew";
 import SellerOrders from "./pages/seller/Orders";
 import SellerCampaigns from "./pages/seller/Campaigns";
+import SellerCampaignNew from "./pages/seller/CampaignNew";
 import SellerAnalytics from "./pages/seller/Analytics";
+import SellerSettings from "./pages/seller/Settings";
 
 // Admin pages
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -223,6 +225,16 @@ export default function App() {
         }
       />
       <Route
+        path="/seller/campaigns/new"
+        element={
+          <RequireAuth allowedRoles={["seller"]}>
+            <SellerLayout>
+              <SellerCampaignNew />
+            </SellerLayout>
+          </RequireAuth>
+        }
+      />
+      <Route
         path="/seller/analytics"
         element={
           <RequireAuth allowedRoles={["seller"]}>
@@ -237,7 +249,7 @@ export default function App() {
         element={
           <RequireAuth allowedRoles={["seller"]}>
             <SellerLayout>
-              <ProfilePage />
+              <SellerSettings />
             </SellerLayout>
           </RequireAuth>
         }
